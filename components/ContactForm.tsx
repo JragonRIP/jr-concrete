@@ -71,19 +71,39 @@ export function ContactForm() {
     setSubmitting(true);
     try {
       const data = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        data.append(key, value ?? "");
+      data.append("name", values.name);
+      data.append("phone", values.phone);
+      data.append("email", values.email);
+      data.append("_replyto", values.email);
+      data.append("project_location", values.location);
+      data.append("project_type", values.projectType);
+      data.append("approximate_size", values.size);
+      data.append("preferred_contact", values.contactMethod);
+      data.append("message", values.message);
+      data.append(
+        "_subject",
+        `JR’s Concrete estimate: ${values.projectType} — ${values.location}`,
+      );
+      data.append("_template", "table");
+      data.append("_captcha", "false");
+      data.append("_honey", values.website ?? "");
+      files.forEach((file, index) => {
+        data.append(index === 0 ? "attachment" : `attachment${index + 1}`, file);
       });
-      files.forEach((file) => data.append("photos", file));
 
-      const response = await fetch("/api/estimate", {
+      const response = await fetch(site.formSubmitUrl, {
         method: "POST",
         body: data,
+        headers: { Accept: "application/json" },
       });
+      const body = (await response.json().catch(() => null)) as
+        | { success?: string | boolean; message?: string }
+        | null;
 
-      if (!response.ok) {
-        const body = (await response.json().catch(() => null)) as { errors?: Record<string, string> } | null;
-        setErrors(body?.errors ?? { message: "Something went wrong. Please call us instead." });
+      if (!response.ok || body?.success === false || body?.success === "false") {
+        setErrors({
+          message: "Something went wrong. Please call us instead.",
+        });
         return;
       }
 
