@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { CheckCircle2, Phone, Upload } from "lucide-react";
 import { Button, ButtonLink } from "./Button";
 import { formatPhone, validateEstimate, type EstimatePayload } from "@/lib/estimate";
-import { contactMethods, projectTypes, site } from "@/lib/site";
+import { contactMethods, projectTypes, site, siteUrl } from "@/lib/site";
 
 const initial: EstimatePayload = {
   name: "",
@@ -77,29 +77,49 @@ export function ContactForm() {
       data.append("name", values.name);
       data.append("phone", values.phone);
       data.append("email", values.email);
-      data.append("location", values.location);
-      data.append("projectType", values.projectType);
-      data.append("size", values.size);
-      data.append("contactMethod", values.contactMethod);
+      if (values.email) data.append("_replyto", values.email);
+      data.append("project_location", values.location);
+      data.append("project_type", values.projectType);
+      data.append("approximate_size", values.size);
+      data.append("preferred_contact", values.contactMethod);
       data.append("message", values.message);
-      data.append("website", values.website ?? "");
-      files.forEach((file) => data.append("photos", file));
+      data.append(
+        "_subject",
+        `JR’s Concrete estimate: ${values.projectType}${values.location ? ` — ${values.location}` : ""}`,
+      );
+      data.append("_template", "table");
+      data.append("_captcha", "false");
+      files.forEach((file, index) => {
+        data.append(index === 0 ? "attachment" : `attachment${index + 1}`, file);
+      });
 
-      const response = await fetch("/api/estimate", {
+      const response = await fetch(site.formSubmitUrl, {
         method: "POST",
         body: data,
         headers: { Accept: "application/json" },
       });
       const body = (await response.json().catch(() => null)) as
-        | { ok?: boolean; errors?: Record<string, string> }
+        | { success?: string | boolean; message?: string }
         | null;
+      const message = body?.message ?? "";
+      const activated =
+        body?.success === true || body?.success === "true" || /thank you|submitted/i.test(message);
 
-      if (!response.ok || !body?.ok) {
-        setErrors(body?.errors ?? { message: "Something went wrong. Please call us instead." });
+      if (activated) {
+        setSuccess(true);
         return;
       }
 
-      setSuccess(true);
+      if (/activat/i.test(message)) {
+        setErrors({
+          form: "Check jragonrip@gmail.com for a FormSubmit activation email, click the link, then send the form once more.",
+        });
+        return;
+      }
+
+      setErrors({
+        form: "Something went wrong. Please call us instead.",
+      });
     } catch {
         setErrors({ form: "Something went wrong. Please call us instead." });
     } finally {
@@ -128,11 +148,15 @@ export function ContactForm() {
   return (
     <form
       method="post"
-      action="/api/estimate"
+      action={site.formSubmitAction}
       encType="multipart/form-data"
       onSubmit={onSubmit}
       className="border border-mist bg-white p-5 sm:p-8 md:p-10"
     >
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_next" value={`${siteUrl}/contact?sent=1`} />
+      <input type="hidden" name="_subject" value="JR’s Concrete estimate request" />
       {searchParams.get("error") === "1" && (
         <p className="mb-5 text-sm text-accent" role="alert">
           That request could not be sent. Check the required fields or call {site.phone}.
@@ -146,7 +170,7 @@ export function ContactForm() {
 
       <input
         type="text"
-        name="website"
+        name="_honey"
         value={values.website}
         onChange={(event) => update("website", event.target.value)}
         className="hidden"
