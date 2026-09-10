@@ -1,16 +1,12 @@
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 import { ServiceCard } from "./ServiceCard";
-import type { ProjectImage } from "@/lib/projects";
+import { getServiceImage, type ProjectImage } from "@/lib/projects";
 import { services } from "@/lib/services";
 
 type ServicesProps = {
   images?: ProjectImage[];
 };
-
-function imageForService(images: ProjectImage[], category: string) {
-  return images.find((image) => image.category === category) ?? images[0];
-}
 
 export function Services({ images = [] }: ServicesProps) {
   return (
@@ -31,7 +27,7 @@ export function Services({ images = [] }: ServicesProps) {
                 title={service.title}
                 summary={service.summary}
                 index={index}
-                image={imageForService(images, service.category)}
+                image={getServiceImage(service.id, images)}
               />
             </Reveal>
           ))}

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { CTASection } from "@/components/CTASection";
 import { PageHero } from "@/components/PageHero";
 import { Reveal } from "@/components/Reveal";
+import { Process } from "@/components/Process";
 import { WhyChoose } from "@/components/WhyChoose";
 import { getIntroImage, getProjectImages } from "@/lib/projects";
 
@@ -63,6 +64,7 @@ export default function AboutPage() {
         </div>
       </section>
       <WhyChoose />
+      <Process />
       <CTASection />
     </>
   );

@@ -1,149 +1,170 @@
-import fs from "fs";
-import path from "path";
-
 export type ProjectImage = {
   src: string;
   filename: string;
   alt: string;
   category: string;
+  caption: string;
   hero: boolean;
   featured: boolean;
+  serviceId?: string;
 };
 
-const PROJECTS_DIR = path.join(process.cwd(), "public", "images", "projects");
-const LOGO_DIR = path.join(process.cwd(), "public", "images", "logo");
-const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
-
-const CATEGORY_RULES: { test: RegExp; category: string; hero?: boolean }[] = [
-  { test: /hero/i, category: "Featured Project", hero: true },
-  { test: /foundation|basement|wall/i, category: "Residential Foundation" },
-  { test: /stamped|decorative/i, category: "Stamped Patio" },
-  { test: /sidewalk|walkway/i, category: "Sidewalk Installation" },
-  { test: /garage/i, category: "Garage Slab" },
-  { test: /driveway/i, category: "Driveway" },
-  { test: /patio/i, category: "Patio" },
-  { test: /slab/i, category: "Concrete Slab" },
-  { test: /flatwork|finish/i, category: "Flatwork" },
+const catalog: Array<Omit<ProjectImage, "src">> = [
+  {
+    filename: "hero-patio.jpg",
+    category: "Patio",
+    caption: "Custom patio — Upper Peninsula",
+    alt: "Finished curved concrete patio overlooking woods in the Powers, Michigan area",
+    hero: true,
+    featured: true,
+    serviceId: "patios",
+  },
+  {
+    filename: "patio-01.jpg",
+    category: "Patio",
+    caption: "Raised patio with rounded edge — residential",
+    alt: "Raised concrete patio with bullnose edge in front of a brick home near Powers, Michigan",
+    hero: false,
+    featured: false,
+    serviceId: "patios",
+  },
+  {
+    filename: "sidewalk-01.jpg",
+    category: "Sidewalk Installation",
+    caption: "Walkway to outbuilding — residential",
+    alt: "Newly poured concrete sidewalk leading to a green outbuilding in the Powers, Michigan area",
+    hero: false,
+    featured: true,
+    serviceId: "sidewalks",
+  },
+  {
+    filename: "sidewalk-02.jpg",
+    category: "Sidewalk Installation",
+    caption: "Front walk and stoop — Powers area",
+    alt: "Finished concrete stoop and walkway beside a home, with a JR’s Concrete work truck in the yard",
+    hero: false,
+    featured: true,
+    serviceId: "sidewalks",
+  },
+  {
+    filename: "garage-slab-01.jpg",
+    category: "Garage Slab",
+    caption: "Interior garage slab — residential",
+    alt: "Finished interior concrete garage slab inside a wood-framed building near Powers, Michigan",
+    hero: false,
+    featured: true,
+    serviceId: "slabs",
+  },
+  {
+    filename: "concrete-slab-01.jpg",
+    category: "Concrete Slab",
+    caption: "Building slab — rural site",
+    alt: "Finished outdoor concrete building slab in an open field near Powers, Michigan",
+    hero: false,
+    featured: false,
+    serviceId: "slabs",
+  },
+  {
+    filename: "concrete-slab-prep-01.jpg",
+    category: "Concrete Slab",
+    caption: "Slab preparation with reinforcement",
+    alt: "Concrete slab forms with vapor barrier and wire reinforcement before the pour",
+    hero: false,
+    featured: false,
+    serviceId: "slabs",
+  },
+  {
+    filename: "stamped-concrete-01.jpg",
+    category: "Stamped Patio",
+    caption: "Stamped patio with fire pit — residential",
+    alt: "Circular wood-plank stamped concrete patio with a fire ring, surrounded by lawn and pines",
+    hero: false,
+    featured: true,
+    serviceId: "stamped-concrete",
+  },
+  {
+    filename: "stamped-concrete-02.jpg",
+    category: "Stamped Patio",
+    caption: "Ashlar stamped patio — residential",
+    alt: "Rectangular stamped concrete patio with an ashlar stone pattern beside a house",
+    hero: false,
+    featured: false,
+    serviceId: "stamped-concrete",
+  },
+  {
+    filename: "stamped-concrete-03.jpg",
+    category: "Stamped Patio",
+    caption: "Wood-look stamped porch — residential",
+    alt: "Covered porch with wood-grain stamped concrete around support posts",
+    hero: false,
+    featured: false,
+    serviceId: "stamped-concrete",
+  },
+  {
+    filename: "foundation-project-01.jpg",
+    category: "Residential Foundation",
+    caption: "Foundation walls — residential build",
+    alt: "Completed residential concrete foundation walls in an excavated lot near Powers, Michigan",
+    hero: false,
+    featured: true,
+    serviceId: "foundations",
+  },
+  {
+    filename: "foundation-project-02.jpg",
+    category: "Residential Foundation",
+    caption: "Foundation forms before the pour",
+    alt: "Residential foundation wall forms set and braced before concrete is poured",
+    hero: false,
+    featured: false,
+    serviceId: "foundations",
+  },
+  {
+    filename: "foundation-project-03.jpg",
+    category: "Residential Foundation",
+    caption: "Basement foundation and floor",
+    alt: "Finished basement foundation walls and concrete floor slab in a wooded lot",
+    hero: false,
+    featured: false,
+    serviceId: "foundations",
+  },
 ];
 
-function categorize(filename: string) {
-  for (const rule of CATEGORY_RULES) {
-    if (rule.test.test(filename)) {
-      return { category: rule.category, hero: Boolean(rule.hero) };
-    }
-  }
-  return { category: "Residential Concrete", hero: false };
-}
-
-function titleFromFilename(filename: string) {
-  return filename
-    .replace(/\.[^.]+$/, "")
-    .replace(/[-_]+/g, " ")
-    .replace(/\b(hero|project)\b/gi, "")
-    .replace(/\b\d+\b/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-export function getFeaturedImages(images: ProjectImage[], count = 6) {
-  const picked: ProjectImage[] = [];
-  const seen = new Set<string>();
-
-  const hero = images.find((image) => image.hero);
-  if (hero) {
-    picked.push(hero);
-    seen.add(hero.category);
-  }
-
-  for (const image of images) {
-    if (picked.length >= count) break;
-    if (picked.includes(image) || seen.has(image.category)) continue;
-    picked.push(image);
-    seen.add(image.category);
-  }
-
-  for (const image of images) {
-    if (picked.length >= count) break;
-    if (!picked.includes(image)) picked.push(image);
-  }
-
-  return picked;
+function toProject(entry: Omit<ProjectImage, "src">): ProjectImage {
+  return {
+    ...entry,
+    src: `/images/projects/${entry.filename}`,
+  };
 }
 
 export function getProjectImages(): ProjectImage[] {
-  if (!fs.existsSync(PROJECTS_DIR)) return [];
-
-  const files = fs
-    .readdirSync(PROJECTS_DIR)
-    .filter((file) => IMAGE_EXT.has(path.extname(file).toLowerCase()))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-
-  return files.map((filename, index) => {
-    const { category, hero } = categorize(filename);
-    const label = titleFromFilename(filename);
-    const alt = label
-      ? `JR’s Concrete ${label} — ${category} in the Powers, Michigan area`
-      : `JR’s Concrete ${category.toLowerCase()} project in the Powers, Michigan area`;
-
-    return {
-      src: `/images/projects/${filename}`,
-      filename,
-      alt,
-      category,
-      hero,
-      featured: hero || index < 8,
-    };
-  });
+  return catalog.map(toProject);
 }
 
-export function getHeroImage(images: ProjectImage[]): ProjectImage | undefined {
+export function getHeroImage(images: ProjectImage[] = getProjectImages()) {
   return images.find((image) => image.hero) ?? images[0];
 }
 
-export function getFoundationImage(images: ProjectImage[]): ProjectImage | undefined {
-  return (
-    images.find((image) => image.category === "Residential Foundation") ??
-    images.find((image) => /foundation/i.test(image.filename)) ??
-    images[1] ??
-    images[0]
-  );
+export function getFoundationImage(images: ProjectImage[] = getProjectImages()) {
+  return images.find((image) => image.filename === "foundation-project-01.jpg") ?? images[0];
 }
 
-export function getIntroImage(images: ProjectImage[]): ProjectImage | undefined {
-  return (
-    images.find((image) => image.category === "Garage Slab") ??
-    images.find((image) => image.category === "Sidewalk Installation") ??
-    images.find((image) => image.category === "Concrete Slab" && !/prep/i.test(image.filename)) ??
-    images.find((image) => !image.hero) ??
-    images[0]
-  );
+export function getIntroImage(images: ProjectImage[] = getProjectImages()) {
+  return images.find((image) => image.filename === "garage-slab-01.jpg") ?? images.find((image) => !image.hero);
+}
+
+export function getFeaturedImages(images: ProjectImage[] = getProjectImages()) {
+  return images.filter((image) => image.featured && !image.hero);
+}
+
+export function getGalleryImages(images: ProjectImage[] = getProjectImages()) {
+  return images.filter((image) => !image.hero);
+}
+
+export function getServiceImage(serviceId: string, images: ProjectImage[] = getProjectImages()) {
+  return images.find((image) => image.serviceId === serviceId && image.featured) ??
+    images.find((image) => image.serviceId === serviceId);
 }
 
 export function getImagesByCategory(images: ProjectImage[], category: string) {
   return images.filter((image) => image.category === category);
-}
-
-export function getLogoSrc() {
-  if (!fs.existsSync(LOGO_DIR)) return null;
-
-  const preferred = [
-    "jr-concrete-logo.png",
-    "jr-concrete-logo.svg",
-    "jr-concrete-logo.webp",
-    "logo.png",
-    "logo.svg",
-    "logo.webp",
-  ];
-
-  for (const name of preferred) {
-    if (fs.existsSync(path.join(LOGO_DIR, name))) {
-      return `/images/logo/${name}`;
-    }
-  }
-
-  const match = fs
-    .readdirSync(LOGO_DIR)
-    .find((file) => IMAGE_EXT.has(path.extname(file).toLowerCase()) || file.endsWith(".svg"));
-
-  return match ? `/images/logo/${match}` : null;
 }

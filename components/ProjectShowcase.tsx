@@ -59,7 +59,7 @@ export function ProjectShowcase({ images }: ProjectShowcaseProps) {
               <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/45" />
               <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                 <p className="font-display text-sm font-bold uppercase tracking-[0.16em] text-white">
-                  {image.category}
+                  {image.caption}
                 </p>
               </div>
             </a>

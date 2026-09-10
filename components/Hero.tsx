@@ -53,6 +53,9 @@ export function Hero({ image }: HeroProps) {
           </ButtonLink>
         </div>
         <p className="mt-8 text-[12px] font-medium uppercase tracking-[0.18em] text-white/55">
+          Serving Powers and nearby U.P. communities
+        </p>
+        <p className="mt-3 text-[12px] font-medium uppercase tracking-[0.18em] text-white/45">
           Family Owned · Quality Workmanship · Residential Concrete
         </p>
       </div>

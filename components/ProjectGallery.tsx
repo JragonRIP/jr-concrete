@@ -99,7 +99,7 @@ export function ProjectGallery({
                 </span>
                 <span className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/35" />
                 <span className="absolute bottom-0 left-0 p-4 text-[12px] font-semibold uppercase tracking-[0.16em] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                  {image.category}
+                  {image.caption}
                 </span>
               </button>
             ))}
@@ -171,7 +171,7 @@ export function ProjectGallery({
               priority
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-4 text-center text-sm font-medium text-white">
-              {current.category}
+              {current.caption}
               <span className="ml-3 text-white/55">
                 {active + 1} / {images.length}
               </span>

@@ -3,7 +3,7 @@ import { Reveal } from "./Reveal";
 const points = [
   {
     title: "Quality Workmanship",
-    copy: "We take pride in every pour and every finished project.",
+    copy: "Every pour starts with preparation — grade, forms, and reinforcement — then a careful finish.",
   },
   {
     title: "Family Owned",
@@ -11,7 +11,7 @@ const points = [
   },
   {
     title: "Built for the U.P.",
-    copy: "Concrete work designed with Michigan conditions in mind.",
+    copy: "Pours and curing are planned around Michigan weather, including freeze-thaw seasons.",
   },
   {
     title: "Big or Small",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 import { CheckCircle2, Phone, Upload } from "lucide-react";
 import { Button, ButtonLink } from "./Button";
 import { formatPhone, validateEstimate, type EstimatePayload } from "@/lib/estimate";
@@ -22,12 +23,13 @@ const MAX_FILES = 3;
 const MAX_FILE_SIZE = 4 * 1024 * 1024;
 
 export function ContactForm() {
+  const searchParams = useSearchParams();
   const [values, setValues] = useState<EstimatePayload>(initial);
   const [files, setFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [fileError, setFileError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(searchParams.get("sent") === "1");
 
   const fileLabel = useMemo(() => {
     if (files.length === 0) return "Optional — add a few project photos";
@@ -67,6 +69,7 @@ export function ContactForm() {
     const nextErrors = validateEstimate(values);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
+    if (fileError) return;
 
     setSubmitting(true);
     try {
@@ -74,42 +77,31 @@ export function ContactForm() {
       data.append("name", values.name);
       data.append("phone", values.phone);
       data.append("email", values.email);
-      data.append("_replyto", values.email);
-      data.append("project_location", values.location);
-      data.append("project_type", values.projectType);
-      data.append("approximate_size", values.size);
-      data.append("preferred_contact", values.contactMethod);
+      data.append("location", values.location);
+      data.append("projectType", values.projectType);
+      data.append("size", values.size);
+      data.append("contactMethod", values.contactMethod);
       data.append("message", values.message);
-      data.append(
-        "_subject",
-        `JR’s Concrete estimate: ${values.projectType} — ${values.location}`,
-      );
-      data.append("_template", "table");
-      data.append("_captcha", "false");
-      data.append("_honey", values.website ?? "");
-      files.forEach((file, index) => {
-        data.append(index === 0 ? "attachment" : `attachment${index + 1}`, file);
-      });
+      data.append("website", values.website ?? "");
+      files.forEach((file) => data.append("photos", file));
 
-      const response = await fetch(site.formSubmitUrl, {
+      const response = await fetch("/api/estimate", {
         method: "POST",
         body: data,
         headers: { Accept: "application/json" },
       });
       const body = (await response.json().catch(() => null)) as
-        | { success?: string | boolean; message?: string }
+        | { ok?: boolean; errors?: Record<string, string> }
         | null;
 
-      if (!response.ok || body?.success === false || body?.success === "false") {
-        setErrors({
-          message: "Something went wrong. Please call us instead.",
-        });
+      if (!response.ok || !body?.ok) {
+        setErrors(body?.errors ?? { message: "Something went wrong. Please call us instead." });
         return;
       }
 
       setSuccess(true);
     } catch {
-      setErrors({ message: "Something went wrong. Please call us instead." });
+        setErrors({ form: "Something went wrong. Please call us instead." });
     } finally {
       setSubmitting(false);
     }
@@ -117,7 +109,7 @@ export function ContactForm() {
 
   if (success) {
     return (
-      <div className="border border-mist bg-white px-6 py-12 text-center md:px-10">
+      <div className="border border-mist bg-white px-6 py-12 text-center md:px-10" role="status" aria-live="polite">
         <CheckCircle2 className="mx-auto h-10 w-10 text-accent" aria-hidden="true" />
         <h3 className="mt-5 font-display text-2xl font-extrabold tracking-tight text-ink">
           Thanks! Your request has been received. JR’s Concrete will be in touch.
@@ -134,7 +126,24 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="border border-mist bg-white p-5 sm:p-8 md:p-10" noValidate>
+    <form
+      method="post"
+      action="/api/estimate"
+      encType="multipart/form-data"
+      onSubmit={onSubmit}
+      className="border border-mist bg-white p-5 sm:p-8 md:p-10"
+    >
+      {searchParams.get("error") === "1" && (
+        <p className="mb-5 text-sm text-accent" role="alert">
+          That request could not be sent. Check the required fields or call {site.phone}.
+        </p>
+      )}
+      {errors.form && (
+        <p className="mb-5 text-sm text-accent" role="alert">
+          {errors.form}
+        </p>
+      )}
+
       <input
         type="text"
         name="website"
@@ -147,11 +156,15 @@ export function ContactForm() {
       />
 
       <div className="grid gap-5 md:grid-cols-2">
-        <Field label="Name" error={errors.name} htmlFor="name">
+        <Field label="Name" error={errors.name} htmlFor="name" required>
           <input
             id="name"
             name="name"
             autoComplete="name"
+            required
+            aria-required="true"
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? "name-error" : undefined}
             value={values.name}
             onChange={(event) => update("name", event.target.value)}
             className={inputClass(errors.name)}
@@ -164,6 +177,8 @@ export function ContactForm() {
             type="tel"
             autoComplete="tel"
             inputMode="tel"
+            aria-invalid={Boolean(errors.phone)}
+            aria-describedby={errors.phone ? "phone-error" : "contact-hint"}
             value={values.phone}
             onChange={(event) => update("phone", formatPhone(event.target.value))}
             className={inputClass(errors.phone)}
@@ -175,25 +190,33 @@ export function ContactForm() {
             name="email"
             type="email"
             autoComplete="email"
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? "email-error" : "contact-hint"}
             value={values.email}
             onChange={(event) => update("email", event.target.value)}
             className={inputClass(errors.email)}
           />
         </Field>
-        <Field label="Project Location" error={errors.location} htmlFor="location">
+        <Field label="Project Location" htmlFor="location">
           <input
             id="location"
             name="location"
             value={values.location}
             onChange={(event) => update("location", event.target.value)}
             placeholder="City or township"
-            className={inputClass(errors.location)}
+            className={inputClass()}
           />
         </Field>
-        <Field label="Project Type" error={errors.projectType} htmlFor="projectType">
+        <p id="contact-hint" className="md:col-span-2 -mt-2 text-sm text-concrete">
+          Phone or email is required.
+        </p>
+        <Field label="Project Type" error={errors.projectType} htmlFor="projectType" required>
           <select
             id="projectType"
             name="projectType"
+            required
+            aria-required="true"
+            aria-invalid={Boolean(errors.projectType)}
             value={values.projectType}
             onChange={(event) => update("projectType", event.target.value)}
             className={inputClass(errors.projectType)}
@@ -218,11 +241,15 @@ export function ContactForm() {
         </Field>
       </div>
 
-      <Field label="Message / Project Details" error={errors.message} htmlFor="message" className="mt-5">
+      <Field label="Project Details" error={errors.message} htmlFor="message" required className="mt-5">
         <textarea
           id="message"
           name="message"
           rows={5}
+          required
+          aria-required="true"
+          aria-invalid={Boolean(errors.message)}
+          aria-describedby={errors.message ? "message-error" : undefined}
           value={values.message}
           onChange={(event) => update("message", event.target.value)}
           className={`${inputClass(errors.message)} min-h-32 py-3`}
@@ -259,7 +286,7 @@ export function ContactForm() {
 
       <div className="mt-6">
         <label htmlFor="photos" className="text-sm font-semibold text-ink">
-          Upload Project Photos
+          Upload Project Photos <span className="font-normal text-concrete">(optional)</span>
         </label>
         <label className="mt-2 flex min-h-28 cursor-pointer flex-col items-center justify-center border border-dashed border-stone/50 bg-paper px-4 text-center">
           <Upload className="mb-2 h-5 w-5 text-accent" aria-hidden="true" />
@@ -274,10 +301,23 @@ export function ContactForm() {
             className="sr-only"
           />
         </label>
-        {fileError && <p className="mt-2 text-sm text-accent">{fileError}</p>}
+        {fileError && (
+          <p className="mt-2 text-sm text-accent" role="alert">
+            {fileError}
+          </p>
+        )}
       </div>
 
-      <Button type="submit" size="lg" className="mt-8 w-full sm:w-auto" disabled={submitting}>
+      <p className="mt-6 text-sm leading-relaxed text-concrete">
+        We use your name, contact information, project details, and any photos only to
+        respond to this estimate request. See our{" "}
+        <a href="/privacy" className="underline underline-offset-2 hover:text-ink">
+          privacy notice
+        </a>
+        .
+      </p>
+
+      <Button type="submit" size="lg" className="mt-6 w-full sm:w-auto" disabled={submitting}>
         {submitting ? "Sending…" : "Request Estimate"}
       </Button>
     </form>
@@ -290,21 +330,24 @@ function Field({
   error,
   children,
   className = "",
+  required = false,
 }: {
   label: string;
   htmlFor: string;
   error?: string;
   children: ReactNode;
   className?: string;
+  required?: boolean;
 }) {
   return (
     <div className={className}>
       <label htmlFor={htmlFor} className="mb-2 block text-sm font-semibold text-ink">
         {label}
+        {required ? <span className="text-accent"> *</span> : null}
       </label>
       {children}
       {error && (
-        <p className="mt-2 text-sm text-accent" role="alert">
+        <p id={`${htmlFor}-error`} className="mt-2 text-sm text-accent" role="alert">
           {error}
         </p>
       )}

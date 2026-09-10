@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CTASection } from "@/components/CTASection";
 import { PageHero } from "@/components/PageHero";
 import { Reveal } from "@/components/Reveal";
-import { getImagesByCategory, getProjectImages } from "@/lib/projects";
+import { getProjectImages, getServiceImage } from "@/lib/projects";
 import { additionalServices, services } from "@/lib/services";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Concrete Services in Powers, MI",
@@ -25,8 +25,7 @@ export default function ServicesPage() {
       <section className="bg-paper py-16 md:py-24">
         <div className="mx-auto max-w-7xl space-y-16 px-5 md:px-8">
           {services.map((service, index) => {
-            const photo =
-              getImagesByCategory(images, service.category)[0] ?? images[index] ?? images[0];
+            const photo = getServiceImage(service.id, images);
             const reverse = index % 2 === 1;
 
             return (
@@ -45,6 +44,26 @@ export default function ServicesPage() {
                     <p className="mt-4 text-base leading-relaxed text-concrete sm:text-lg">
                       {service.details}
                     </p>
+                    <dl className="mt-6 space-y-4 text-sm leading-relaxed">
+                      <div>
+                        <dt className="font-display font-bold uppercase tracking-[0.14em] text-ink">
+                          Good fit for
+                        </dt>
+                        <dd className="mt-1 text-concrete">{service.goodFit}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-display font-bold uppercase tracking-[0.14em] text-ink">
+                          What affects the estimate
+                        </dt>
+                        <dd className="mt-1 text-concrete">{service.estimateFactors}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-display font-bold uppercase tracking-[0.14em] text-ink">
+                          What to expect
+                        </dt>
+                        <dd className="mt-1 text-concrete">{service.expect}</dd>
+                      </div>
+                    </dl>
                   </div>
                   <div className={`relative aspect-[16/11] overflow-hidden bg-mist ${reverse ? "lg:order-1" : ""}`}>
                     {photo ? (

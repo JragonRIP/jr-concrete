@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ContactForm } from "./ContactForm";
 import { Reveal } from "./Reveal";
 import { site } from "@/lib/site";
@@ -31,7 +32,9 @@ export function EstimateBlock() {
           </div>
         </Reveal>
         <Reveal className="lg:col-span-8" delay={80}>
-          <ContactForm />
+          <Suspense fallback={<div className="min-h-96 border border-mist bg-white" />}>
+            <ContactForm />
+          </Suspense>
         </Reveal>
       </div>
     </section>

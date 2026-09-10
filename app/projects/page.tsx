@@ -18,7 +18,7 @@ export default function ProjectsPage() {
       <PageHero
         eyebrow="Projects"
         title="Work Around the U.P."
-        description="A look at residential concrete from JR’s Concrete — foundations, slabs, driveways, sidewalks, patios and decorative work."
+        description="A look at residential concrete from JR’s Concrete — foundations, slabs, sidewalks, patios and stamped work around the Powers area."
       />
       <ProjectGallery images={images} heading="Project Gallery" eyebrow="All Work" />
       <CTASection />

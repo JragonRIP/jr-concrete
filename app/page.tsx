@@ -7,10 +7,12 @@ import { ProjectGallery } from "@/components/ProjectGallery";
 import { ProjectShowcase } from "@/components/ProjectShowcase";
 import { ServiceArea } from "@/components/ServiceArea";
 import { Services } from "@/components/Services";
+import { Process } from "@/components/Process";
 import { WhyChoose } from "@/components/WhyChoose";
 import {
   getFeaturedImages,
   getFoundationImage,
+  getGalleryImages,
   getHeroImage,
   getIntroImage,
   getProjectImages,
@@ -22,6 +24,7 @@ export default function Home() {
   const intro = getIntroImage(images);
   const foundation = getFoundationImage(images);
   const featured = getFeaturedImages(images);
+  const gallery = getGalleryImages(images);
 
   return (
     <>
@@ -30,8 +33,9 @@ export default function Home() {
       <Services images={images} />
       <ProjectShowcase images={featured} />
       <WhyChoose />
+      <Process />
       <FoundationFeature image={foundation} />
-      <ProjectGallery images={images} />
+      <ProjectGallery images={gallery} />
       <ServiceArea />
       <CTASection />
       <EstimateBlock />

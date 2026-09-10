@@ -16,7 +16,7 @@ export const site = {
   mapEmbedUrl:
     "https://maps.google.com/maps?q=Powers%2C%20Michigan&z=11&hl=en&output=embed",
   mapLinkUrl: "https://www.google.com/maps/search/?api=1&query=Powers%2C%20Michigan",
-  formSubmitUrl: "https://formsubmit.co/ajax/johnraab1@gmail.com",
+  formSubmitUrl: "https://formsubmit.co/ajax/jragonrip@gmail.com",
 } as const;
 
 export const siteUrl =

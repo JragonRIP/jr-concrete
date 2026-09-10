@@ -33,16 +33,19 @@ export function validateEstimate(input: EstimatePayload): EstimateErrors {
   }
 
   const phoneDigits = digits(input.phone);
-  if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-    errors.phone = "Enter a valid phone number.";
-  }
+  const hasPhone = phoneDigits.length >= 10 && phoneDigits.length <= 11;
+  const hasEmail = emailPattern.test(input.email.trim());
 
-  if (!emailPattern.test(input.email.trim())) {
-    errors.email = "Enter a valid email address.";
-  }
-
-  if (input.location.trim().length < 2) {
-    errors.location = "Tell us where the project is located.";
+  if (!hasPhone && !hasEmail) {
+    errors.phone = "Enter a phone number or email so we can reach you.";
+    errors.email = "Enter a phone number or email so we can reach you.";
+  } else {
+    if (input.phone.trim() && !hasPhone) {
+      errors.phone = "Enter a valid phone number.";
+    }
+    if (input.email.trim() && !hasEmail) {
+      errors.email = "Enter a valid email address.";
+    }
   }
 
   if (!projectTypes.includes(input.projectType as ProjectType)) {
@@ -67,4 +70,18 @@ export function formatPhone(value: string) {
   if (local.length < 4) return local;
   if (local.length < 7) return `(${local.slice(0, 3)}) ${local.slice(3)}`;
   return `(${local.slice(0, 3)}) ${local.slice(3, 6)}-${local.slice(6, 10)}`;
+}
+
+export function payloadFromFormData(formData: FormData): EstimatePayload {
+  return {
+    name: String(formData.get("name") ?? ""),
+    phone: String(formData.get("phone") ?? ""),
+    email: String(formData.get("email") ?? ""),
+    location: String(formData.get("location") ?? formData.get("project_location") ?? ""),
+    projectType: String(formData.get("projectType") ?? formData.get("project_type") ?? ""),
+    size: String(formData.get("size") ?? formData.get("approximate_size") ?? ""),
+    message: String(formData.get("message") ?? ""),
+    contactMethod: String(formData.get("contactMethod") ?? formData.get("preferred_contact") ?? ""),
+    website: String(formData.get("website") ?? formData.get("_honey") ?? ""),
+  };
 }

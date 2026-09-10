@@ -74,7 +74,13 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 text-xs text-white/45 md:flex-row md:items-center md:justify-between md:px-8">
           <p>© {year} {site.name}. All rights reserved.</p>
-          <p>Residential concrete flatwork and foundations · Upper Peninsula</p>
+          <p>
+            <Link href="/privacy" className="hover:text-white">
+              Privacy
+            </Link>
+            <span className="mx-2">·</span>
+            Powers, Michigan and surrounding Upper Peninsula
+          </p>
         </div>
       </div>
     </footer>
