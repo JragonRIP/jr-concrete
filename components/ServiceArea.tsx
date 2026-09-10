@@ -1,5 +1,4 @@
 import { Phone } from "lucide-react";
-import { MichiganUP } from "./MichiganUP";
 import { Reveal } from "./Reveal";
 import { site } from "@/lib/site";
 
@@ -31,11 +30,25 @@ export function ServiceArea() {
           </a>
         </Reveal>
         <Reveal delay={100}>
-          <div className="bg-white px-6 py-10 md:px-10">
-            <MichiganUP className="w-full text-stone" />
-            <p className="mt-6 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-concrete">
-              Upper Peninsula · Michigan
-            </p>
+          <div className="overflow-hidden bg-white">
+            <div className="relative aspect-[4/3] min-h-[320px] w-full">
+              <iframe
+                title="Map of Powers, Michigan"
+                src={site.mapEmbedUrl}
+                className="absolute inset-0 h-full w-full border-0 grayscale-[20%]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+            <a
+              href={site.mapLinkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-5 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-concrete transition-colors hover:text-accent"
+            >
+              Open Powers, Michigan in Google Maps
+            </a>
           </div>
         </Reveal>
       </div>

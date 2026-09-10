@@ -13,6 +13,9 @@ export const site = {
   description:
     "JR’s Concrete provides residential concrete flatwork, driveways, patios, slabs, stamped concrete and foundations in Powers, Michigan and surrounding Upper Peninsula communities.",
   tagline: "Family-owned concrete contractor specializing in residential flatwork and foundations.",
+  mapEmbedUrl:
+    "https://maps.google.com/maps?q=Powers%2C%20Michigan&z=11&hl=en&output=embed",
+  mapLinkUrl: "https://www.google.com/maps/search/?api=1&query=Powers%2C%20Michigan",
 } as const;
 
 export const siteUrl =
