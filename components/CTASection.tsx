@@ -1,12 +1,31 @@
+import Image from "next/image";
 import { Phone } from "lucide-react";
 import { ButtonLink } from "./Button";
+import { getCtaImage, type ProjectImage } from "@/lib/projects";
 import { site } from "@/lib/site";
 
-export function CTASection() {
+type CTASectionProps = {
+  image?: ProjectImage;
+};
+
+export function CTASection({ image }: CTASectionProps) {
+  const photo = image ?? getCtaImage();
+
   return (
     <section className="relative overflow-hidden bg-ink py-20 text-white md:py-28">
-      <div className="concrete-panel absolute inset-0 opacity-80" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/30" />
+      {photo ? (
+        <Image
+          src={photo.src}
+          alt=""
+          fill
+          className="object-cover"
+          sizes="100vw"
+          aria-hidden="true"
+        />
+      ) : (
+        <div className="concrete-panel absolute inset-0 opacity-80" aria-hidden="true" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/62 to-black/42" />
       <div className="relative mx-auto max-w-4xl px-5 text-center md:px-8">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.26em] text-accent">
           Free Estimate

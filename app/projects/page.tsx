@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CTASection } from "@/components/CTASection";
 import { PageHero } from "@/components/PageHero";
 import { ProjectGallery } from "@/components/ProjectGallery";
-import { getProjectImages } from "@/lib/projects";
+import { getGalleryImages } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Concrete Projects in the Upper Peninsula",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectsPage() {
-  const images = getProjectImages();
+  const images = getGalleryImages();
 
   return (
     <>

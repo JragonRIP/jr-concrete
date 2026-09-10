@@ -6,10 +6,21 @@ export type ProjectImage = {
   caption: string;
   hero: boolean;
   featured: boolean;
+  gallery?: boolean;
   serviceId?: string;
 };
 
 const catalog: Array<Omit<ProjectImage, "src">> = [
+  {
+    filename: "driveway-01.jpg",
+    category: "Driveway",
+    caption: "Residential driveway and approach — Powers area",
+    alt: "Fresh concrete driveway and parking pad at a home near Powers, Michigan, with a JR’s Concrete work truck on the pour",
+    hero: false,
+    featured: false,
+    gallery: false,
+    serviceId: "driveways",
+  },
   {
     filename: "hero-patio.jpg",
     category: "Patio",
@@ -157,7 +168,11 @@ export function getFeaturedImages(images: ProjectImage[] = getProjectImages()) {
 }
 
 export function getGalleryImages(images: ProjectImage[] = getProjectImages()) {
-  return images.filter((image) => !image.hero);
+  return images.filter((image) => !image.hero && image.gallery !== false);
+}
+
+export function getCtaImage(images: ProjectImage[] = getProjectImages()) {
+  return images.find((image) => image.filename === "patio-01.jpg") ?? images.find((image) => !image.hero);
 }
 
 export function getServiceImage(serviceId: string, images: ProjectImage[] = getProjectImages()) {
