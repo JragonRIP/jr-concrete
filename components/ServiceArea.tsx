@@ -4,13 +4,13 @@ import { site } from "@/lib/site";
 
 export function ServiceArea() {
   return (
-    <section className="bg-cream py-20 md:py-28">
+    <section className="overflow-x-clip bg-cream py-20 md:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-8 lg:grid-cols-2">
-        <Reveal>
+        <Reveal className="min-w-0">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.26em] text-accent">
             Service Area
           </p>
-          <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl lg:text-5xl">
+          <h2 className="font-display text-3xl font-extrabold tracking-tight text-balance text-ink sm:text-4xl lg:text-5xl">
             Serving Powers and the Surrounding Upper Peninsula
           </h2>
           <div className="mt-6 space-y-4 text-base leading-relaxed text-concrete sm:text-lg">
@@ -29,13 +29,13 @@ export function ServiceArea() {
             {site.phone}
           </a>
         </Reveal>
-        <Reveal delay={100}>
-          <div className="overflow-hidden bg-white">
-            <div className="relative aspect-[4/3] min-h-[320px] w-full">
+        <Reveal className="min-w-0" delay={100}>
+          <div className="w-full max-w-full overflow-hidden bg-white">
+            <div className="relative h-72 w-full sm:h-[320px] lg:h-[380px]">
               <iframe
                 title="Map of Powers, Michigan"
                 src={site.mapEmbedUrl}
-                className="absolute inset-0 h-full w-full border-0 grayscale-[20%]"
+                className="absolute inset-0 h-full w-full max-w-full border-0 grayscale-[20%]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
@@ -45,9 +45,9 @@ export function ServiceArea() {
               href={site.mapLinkUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block px-5 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-concrete transition-colors hover:text-accent"
+              className="block px-4 py-4 text-center text-[11px] font-semibold uppercase tracking-[0.12em] text-concrete transition-colors hover:text-accent sm:tracking-[0.18em]"
             >
-              Open Powers, Michigan in Google Maps
+              Open in Google Maps
             </a>
           </div>
         </Reveal>
