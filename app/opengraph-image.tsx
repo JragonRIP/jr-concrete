@@ -1,9 +1,15 @@
+import { readFile } from "fs/promises";
+import path from "path";
 import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const logo = await readFile(
+    path.join(process.cwd(), "public", "images", "logo", "logo-on-dark.png"),
+  );
+
   return new ImageResponse(
     (
       <div
@@ -18,29 +24,22 @@ export default function OpenGraphImage() {
           padding: 72,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            fontSize: 22,
-            letterSpacing: 4,
-            textTransform: "uppercase",
-            color: "#e24a1a",
-          }}
-        >
-          Powers, Michigan
-        </div>
+        <img
+          src={`data:image/png;base64,${logo.toString("base64")}`}
+          width={168}
+          height={148}
+          alt=""
+        />
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              fontSize: 86,
+              fontSize: 64,
               fontWeight: 800,
               lineHeight: 0.95,
               letterSpacing: -2,
             }}
           >
-            JR’s Concrete
+            Concrete built to last.
           </div>
           <div
             style={{
@@ -50,10 +49,10 @@ export default function OpenGraphImage() {
               maxWidth: 760,
             }}
           >
-            Residential flatwork and foundations throughout the Upper Peninsula.
+            Residential flatwork and foundations in Powers, Michigan.
           </div>
         </div>
-        <div style={{ fontSize: 24, color: "#e24a1a" }}>(906) 241-0001</div>
+        <div style={{ fontSize: 24, color: "#dc622b" }}>(906) 241-0001</div>
       </div>
     ),
     size,

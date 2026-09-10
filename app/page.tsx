@@ -9,6 +9,7 @@ import { ServiceArea } from "@/components/ServiceArea";
 import { Services } from "@/components/Services";
 import { WhyChoose } from "@/components/WhyChoose";
 import {
+  getFeaturedImages,
   getFoundationImage,
   getHeroImage,
   getIntroImage,
@@ -20,13 +21,14 @@ export default function Home() {
   const hero = getHeroImage(images);
   const intro = getIntroImage(images);
   const foundation = getFoundationImage(images);
+  const featured = getFeaturedImages(images);
 
   return (
     <>
       <Hero image={hero} />
       <Intro image={intro} />
       <Services images={images} />
-      <ProjectShowcase images={images} />
+      <ProjectShowcase images={featured} />
       <WhyChoose />
       <FoundationFeature image={foundation} />
       <ProjectGallery images={images} />

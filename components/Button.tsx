@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 const variants = {
   primary:
-    "bg-accent text-white hover:bg-accent-dark shadow-[0_10px_24px_-12px_rgba(226,74,26,0.9)]",
+    "bg-accent text-white hover:bg-accent-dark shadow-[0_10px_24px_-12px_rgba(220,98,43,0.9)]",
   secondary: "bg-cream text-ink hover:bg-white",
   outline: "border border-ink/15 bg-transparent text-ink hover:border-ink/40 hover:bg-white",
   outlineLight:

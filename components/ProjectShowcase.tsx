@@ -42,13 +42,6 @@ export function ProjectShowcase({ images }: ProjectShowcaseProps) {
           </div>
         </Reveal>
 
-        {featured.length === 0 ? (
-          <p className="mt-10 max-w-xl text-white/65">
-            Ask about recent driveways, slabs, patios, and foundations in the
-            Powers area — or request an estimate for your own project.
-          </p>
-        ) : null}
-
         <div className="mt-12 grid grid-cols-1 gap-3 md:grid-cols-12">
           {featured.map((image, index) => (
             <a

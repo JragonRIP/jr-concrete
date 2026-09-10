@@ -16,7 +16,7 @@ export const site = {
 } as const;
 
 export const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://jr-concrete-pi.vercel.app";
 
 export const navLinks = [
   { href: "/", label: "Home" },

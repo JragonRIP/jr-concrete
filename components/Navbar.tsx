@@ -8,11 +8,7 @@ import { Logo } from "./Logo";
 import { ButtonLink } from "./Button";
 import { navLinks, site } from "@/lib/site";
 
-type NavbarProps = {
-  logoSrc?: string | null;
-};
-
-export function Navbar({ logoSrc }: NavbarProps) {
+export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -48,7 +44,7 @@ export function Navbar({ logoSrc }: NavbarProps) {
           scrolled ? "h-[68px]" : "h-20"
         }`}
       >
-        <Logo variant="light" src={logoSrc} compact={scrolled} />
+        <Logo variant="light" size="nav" />
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
           {navLinks.map((link) => {

@@ -16,8 +16,8 @@
   --color-mist: #e6e1d8;
   --color-paper: #f4f1ea;
   --color-cream: #faf8f4;
-  --color-accent: #e24a1a;
-  --color-accent-dark: #c43d14;
+  --color-accent: #dc622b;
+  --color-accent-dark: #c45422;
   --font-sans: var(--font-geist-sans);
   --font-display: var(--font-archivo);
 }
@@ -48,12 +48,12 @@ body {
 }
 
 ::selection {
-  background: #e24a1a;
+  background: #dc622b;
   color: #fff;
 }
 
 :focus-visible {
-  outline: 2px solid #e24a1a;
+  outline: 2px solid #dc622b;
   outline-offset: 3px;
 }
 

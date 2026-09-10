@@ -19,7 +19,7 @@ export function JsonLd() {
       "@type": "Place",
       name: site.area,
     },
-    image: `${siteUrl}/opengraph-image`,
+    image: [`${siteUrl}/images/logo/logo-on-light.png`, `${siteUrl}/opengraph-image`],
   };
 
   return (

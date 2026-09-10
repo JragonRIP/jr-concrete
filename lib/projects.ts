@@ -39,9 +39,35 @@ function titleFromFilename(filename: string) {
   return filename
     .replace(/\.[^.]+$/, "")
     .replace(/[-_]+/g, " ")
+    .replace(/\b(hero|project)\b/gi, "")
     .replace(/\b\d+\b/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+export function getFeaturedImages(images: ProjectImage[], count = 6) {
+  const picked: ProjectImage[] = [];
+  const seen = new Set<string>();
+
+  const hero = images.find((image) => image.hero);
+  if (hero) {
+    picked.push(hero);
+    seen.add(hero.category);
+  }
+
+  for (const image of images) {
+    if (picked.length >= count) break;
+    if (picked.includes(image) || seen.has(image.category)) continue;
+    picked.push(image);
+    seen.add(image.category);
+  }
+
+  for (const image of images) {
+    if (picked.length >= count) break;
+    if (!picked.includes(image)) picked.push(image);
+  }
+
+  return picked;
 }
 
 export function getProjectImages(): ProjectImage[] {
@@ -85,8 +111,9 @@ export function getFoundationImage(images: ProjectImage[]): ProjectImage | undef
 
 export function getIntroImage(images: ProjectImage[]): ProjectImage | undefined {
   return (
-    images.find((image) => image.category === "Concrete Slab") ??
-    images.find((image) => image.category === "Driveway") ??
+    images.find((image) => image.category === "Garage Slab") ??
+    images.find((image) => image.category === "Sidewalk Installation") ??
+    images.find((image) => image.category === "Concrete Slab" && !/prep/i.test(image.filename)) ??
     images.find((image) => !image.hero) ??
     images[0]
   );

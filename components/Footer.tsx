@@ -3,18 +3,14 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "./Logo";
 import { footerServices, navLinks, site } from "@/lib/site";
 
-type FooterProps = {
-  logoSrc?: string | null;
-};
-
-export function Footer({ logoSrc }: FooterProps) {
+export function Footer() {
   const year = new Date().getFullYear();
 
   return (
     <footer className="bg-ink text-white">
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-2 md:px-8 lg:grid-cols-4 lg:py-20">
         <div className="lg:col-span-1">
-          <Logo variant="light" src={logoSrc} />
+          <Logo variant="light" size="footer" />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/62">
             {site.tagline}
           </p>

@@ -4,7 +4,6 @@ import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { MobileCTA } from "@/components/MobileCTA";
 import { Navbar } from "@/components/Navbar";
-import { getLogoSrc } from "@/lib/projects";
 import { site, siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -36,12 +35,16 @@ export const metadata: Metadata = {
     "stamped concrete",
     "garage slabs",
   ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "JR’s Concrete | Concrete Contractor in Powers, MI",
     description: site.description,
     type: "website",
     locale: "en_US",
     siteName: site.name,
+    url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
@@ -51,8 +54,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  const logoSrc = getLogoSrc();
-
   return (
     <html
       lang="en"
@@ -66,11 +67,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <Navbar logoSrc={logoSrc} />
+        <Navbar />
         <main id="main" className="flex-1 pb-16 md:pb-0">
           {children}
         </main>
-        <Footer logoSrc={logoSrc} />
+        <Footer />
         <MobileCTA />
       </body>
     </html>
