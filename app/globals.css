@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f1ea;
+  --foreground: #141414;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ink: #101010;
+  --color-charcoal: #171717;
+  --color-slate: #2a2a2a;
+  --color-concrete: #6f6b65;
+  --color-stone: #b7b2a9;
+  --color-mist: #e6e1d8;
+  --color-paper: #f4f1ea;
+  --color-cream: #faf8f4;
+  --color-accent: #e24a1a;
+  --color-accent-dark: #c43d14;
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-archivo);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: #e24a1a;
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid #e24a1a;
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+.texture-noise {
+  background-image: url("/images/textures/noise.svg");
+  background-size: 180px 180px;
+}
+
+.concrete-panel {
+  background-color: #1a1a1a;
+  background-image:
+    url("/images/textures/noise.svg"),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.04), transparent 42%),
+    linear-gradient(180deg, #1f1f1f, #121212);
+  background-size: 180px 180px, auto, auto;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: reveal-up 720ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-play-state: paused;
+}
+
+.reveal.is-visible {
+  animation-play-state: running;
+}
+
+@keyframes reveal-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
