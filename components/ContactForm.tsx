@@ -112,7 +112,7 @@ export function ContactForm() {
 
       if (/activat/i.test(message)) {
         setErrors({
-          form: "Check jragonrip@gmail.com for a FormSubmit activation email, click the link, then send the form once more.",
+          form: "Check johnraab1@gmail.com for a FormSubmit activation email, click the link, then send the form once more.",
         });
         return;
       }
